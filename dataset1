@@ -1,0 +1,40 @@
+# Load necessary libraries
+library(readxl)  # For reading Excel files
+library(dplyr)   # For data manipulation
+library(ggplot2) # For visualization
+
+# Set the path to your Excel file
+file_path <- "C:/Users/samso/Documents/bbref1/GregMPitchingStats1.xlsx"
+
+# Read the data from the Excel file
+data <- read_excel(file_path)
+
+# Check and convert columns to numeric if necessary
+data <- data %>%
+  mutate(
+    HR = as.numeric(HR),
+    BB = as.numeric(BB),
+    SO = as.numeric(SO),
+    Age = as.numeric(Age)
+  )
+
+# Calculate HR, Walks, and Strikeouts per year
+data <- data %>%
+  mutate(
+    HR_per_year = HR / Age,
+    Walks_per_year = BB / Age,
+    Strikeouts_per_year = SO / Age
+  )
+str(data) # Check the structure of the data
+# Create a ggplot: Line plot of HR, Walks, and Strikeouts per year
+ggplot(data, aes(x = Age)) +
+  geom_line(aes(y = HR_per_year, color = "Home Runs per Year"), size = 1) +
+  geom_line(aes(y = Walks_per_year, color = "Walks per Year"), size = 1) +
+  geom_line(aes(y = Strikeouts_per_year, color = "Strikeouts per Year"), size = 1) + # nolint
+  labs(
+    title = "Home Runs, Walks, and Strikeouts per Year",
+    x = "Years",
+    y = "Count per Year",
+    color = "Metrics"
+  ) +
+  theme_minimal()
